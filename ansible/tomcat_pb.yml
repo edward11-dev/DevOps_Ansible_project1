@@ -1,0 +1,16 @@
+---
+- name: Launch Tomcat 
+  hosts: webservers
+  #become: yes
+
+  tasks:
+      - name: Copy WAR file to the server
+        ansible.builtin.shell: | 
+          aws s3 cp s3://tomcat-bucket2/hello-world-war-1.0.0.war /home/ubuntu/apache-tomcat-9.0.63/webapps/
+      - name: Restart Tomcat Server
+        remote_user: Ubuntu
+        command: chdir=/home/ubuntu/apache-tomcat-9.0.63/bin {{ item }}
+        with_items:
+          - ./shutdown.sh
+          - ./startup.sh 
+            
